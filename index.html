@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Apex PU Dashboard</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --panel:#ffffff; --ink:#15171c; --muted:#5b6472;
+    --line:#e3e6eb; --accent:#00a19c; --accent2:#111;
+    --green:#1a9d57; --amber:#d98a00; --red:#d64545; --grey:#9aa3b2;
+    --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0c0e12; --panel:#15181e; --ink:#e8ebf0; --muted:#9aa3b2;
+      --line:#242932; --accent:#2fd4cc; --accent2:#e8ebf0;
+      --green:#35c07a; --amber:#f0a92b; --red:#f06a6a; --grey:#6b7484;
+      --shadow:0 1px 2px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0c0e12; --panel:#15181e; --ink:#e8ebf0; --muted:#9aa3b2;
+    --line:#242932; --accent:#2fd4cc; --accent2:#e8ebf0;
+    --green:#35c07a; --amber:#f0a92b; --red:#f06a6a; --grey:#6b7484;
+    --shadow:0 1px 2px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:24px 16px 56px;}
+  .wrap{max-width:1040px;margin:0 auto;}
+  header{margin-bottom:20px;border-left:4px solid var(--accent);padding-left:14px;}
+  .eyebrow{color:var(--accent);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:12px;}
+  h1{margin:4px 0 2px;font-size:26px;line-height:1.15;}
+  .sub{color:var(--muted);font-size:14px;}
+  .grid{display:grid;gap:16px;}
+  .kpis{grid-template-columns:repeat(4,1fr);margin:20px 0;}
+  @media(max-width:720px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:16px;box-shadow:var(--shadow);}
+  .kpi .val{font-size:23px;font-weight:760;letter-spacing:-.01em;}
+  .kpi .lbl{color:var(--muted);font-size:12.5px;margin-top:2px;}
+  .kpi .delta{font-size:12px;margin-top:6px;font-weight:600;}
+  .up{color:var(--green)} .down{color:var(--red)} .warn{color:var(--amber)}
+  .cols{grid-template-columns:1.4fr 1fr;}
+  @media(max-width:720px){.cols{grid-template-columns:1fr}}
+  h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;
+    padding:3px 10px;border-radius:999px;}
+  .pill.red{background:color-mix(in srgb,var(--red) 16%,transparent);color:var(--red)}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+  .dot.g{background:var(--green)}.dot.a{background:var(--amber)}.dot.r{background:var(--red)}.dot.n{background:var(--grey)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+  tr:last-child td{border-bottom:none;}
+  .bar{height:8px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:4px;}
+  .bar>span{display:block;height:100%;background:var(--accent);}
+  .bar.red>span{background:var(--red)} .bar.amber>span{background:var(--amber)}
+  .rag{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;}
+  .rag div{font-size:13px;display:flex;align-items:center;gap:7px;}
+  .milestones{margin:0;padding:0;}
+  .milestones li{list-style:none;display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .milestones li:last-child{border-bottom:none}
+  .mtag{margin-left:auto;font-size:11.5px;color:var(--muted);font-weight:600;}
+  .gate{background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:8px;padding:0 8px;font-weight:700;}
+  footer{color:var(--muted);font-size:12px;margin-top:28px;text-align:center;}
+  a{color:var(--accent);}
+  .score{font-weight:700;padding:1px 7px;border-radius:6px;font-size:12.5px;}
+  .score.r{background:color-mix(in srgb,var(--red) 18%,transparent);color:var(--red)}
+  .score.a{background:color-mix(in srgb,var(--amber) 18%,transparent);color:var(--amber)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">🏎️ Power Unit Programme · Demo</div>
+    <h1>Project Apex — 2026 Power Unit Development</h1>
+    <div class="sub">Month 6 · <span class="pill red"><span class="dot r"></span>Overall RED → recovering</span> &nbsp; Fictional data · built by Viswanadham Ampolu</div>
+  </header>
+
+  <!-- KPIs -->
+  <div class="grid kpis">
+    <div class="card kpi"><div class="val">99.2%</div><div class="lbl">Forecast vs cost cap</div><div class="delta warn">Above 98% target</div></div>
+    <div class="card kpi"><div class="val">3.8 / 7.0<span style="font-size:13px;font-weight:600">k km</span></div><div class="lbl">Validated reliability mileage</div><div class="delta down">Behind plan (R-01)</div></div>
+    <div class="card kpi"><div class="val">2 / 7</div><div class="lbl">Milestones delivered</div><div class="delta up">Architecture + fuel locked</div></div>
+    <div class="card kpi"><div class="val">3 🔴</div><div class="lbl">Red risks (score ≥ 15)</div><div class="delta down">Reliability · cost · dyno</div></div>
+  </div>
+
+  <div class="grid cols">
+    <!-- Milestones -->
+    <div class="card">
+      <h2>🗺️ Milestones &amp; gate</h2>
+      <ul class="milestones">
+        <li><span class="dot g"></span> M1 — ICE architecture down-selected <span class="mtag">Done · M3</span></li>
+        <li><span class="dot g"></span> M2 — Sustainable-fuel targets agreed <span class="mtag">Done · M4</span></li>
+        <li><span class="dot a"></span> M3 — Full-PU first-fire on dyno <span class="mtag">At risk · M6</span></li>
+        <li><span class="dot n"></span> M4 — Reliability target (≥7,000 km) <span class="mtag">M10</span></li>
+        <li><span class="dot n"></span> <span class="gate">⛩️ FIA homologation gate</span> <span class="mtag">M12</span></li>
+        <li><span class="dot n"></span> M5 — Pre-season testing complete <span class="mtag">M14</span></li>
+        <li><span class="dot n"></span> M6 — Round 1 deployment <span class="mtag">M15</span></li>
+        <li><span class="dot n"></span> M7 — Season within element allocation <span class="mtag">M18</span></li>
+      </ul>
+    </div>
+
+    <!-- health + progress bars -->
+    <div class="card">
+      <h2>🚦 Health by dimension</h2>
+      <div class="rag">
+        <div><span class="dot g"></span> Performance</div>
+        <div><span class="dot r"></span> Reliability</div>
+        <div><span class="dot a"></span> Cost cap</div>
+        <div><span class="dot a"></span> Schedule</div>
+        <div><span class="dot r"></span> Dyno capacity</div>
+        <div><span class="dot g"></span> Compliance</div>
+      </div>
+      <h2 style="margin-top:20px">🔧 Reliability mileage</h2>
+      <div class="lbl" style="font-size:12.5px">3,800 of 7,000 km (54%)</div>
+      <div class="bar red"><span style="width:54%"></span></div>
+      <h2 style="margin-top:18px">💷 Cost cap burn</h2>
+      <div class="lbl" style="font-size:12.5px">Forecast 99.2% of cap</div>
+      <div class="bar amber"><span style="width:99%"></span></div>
+      <h2 style="margin-top:18px">⚡ Performance vs target</h2>
+      <div class="lbl" style="font-size:12.5px">On track — 100%+ on validated runs</div>
+      <div class="bar"><span style="width:100%"></span></div>
+    </div>
+  </div>
+
+  <!-- Top risks -->
+  <div class="card" style="margin-top:16px">
+    <h2>⚠️ Top risks &amp; issues — the connected squeeze</h2>
+    <table>
+      <tr><th>ID</th><th>Item</th><th>Owner</th><th>Score</th><th>Action / decision</th></tr>
+      <tr><td>R-01</td><td>Reliability target not met before homologation lock</td><td>Chief Dyno Eng</td><td><span class="score r">20</span></td><td>Third-party dyno hours (board decision)</td></tr>
+      <tr><td>R-02</td><td>Cost-cap pressure forces a spec compromise</td><td>Cost Cap Lead</td><td><span class="score r">16</span></td><td>Defer non-critical ERS upgrade (Option A)</td></tr>
+      <tr><td>R-03</td><td>Dyno capacity insufficient for validation plan</td><td>Chief Dyno Eng</td><td><span class="score r">16</span></td><td>Single prioritised schedule + night shifts</td></tr>
+      <tr><td>I-02</td><td>Cost forecast 99.2% vs 98% target</td><td>Cost Cap Lead</td><td><span class="score a">High</span></td><td>Board to choose spec option this month</td></tr>
+    </table>
+  </div>
+
+  <footer>
+    Demo artifact · all data fictional · see
+    <a href="docs/status-report.md">status report</a> ·
+    <a href="docs/raid-log.md">RAID log</a> ·
+    <a href="docs/roadmap.md">roadmap</a> ·
+    <a href="README.md">README</a>
+  </footer>
+</div>
+</body>
+</html>
